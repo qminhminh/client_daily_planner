@@ -33,9 +33,15 @@ class _SplashScreenState extends State<SplashScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // Thêm logo
-            Image.asset(
-              'assets/download.jpg', // Đường dẫn đến logo của bạn
-              height: 150, // Chiều cao của logo
+            Center(
+              child: ClipOval(
+                child: Image.asset(
+                  'assets/logo.jpg', // Đường dẫn đến logo của bạn
+                  height: 150, // Chiều cao của logo
+                  width: 150, // Chiều rộng của logo
+                  fit: BoxFit.cover, // Đảm bảo hình ảnh không bị méo
+                ),
+              ),
             ),
             const SizedBox(height: 20),
             // Thêm tên ứng dụng hoặc dòng chào mừng

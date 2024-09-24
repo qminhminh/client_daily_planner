@@ -1,4 +1,4 @@
-import 'package:daily_planner_test/splash/splash_screen.dart';
+import 'package:daily_planner_test/router/app_router.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -16,7 +16,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
       ),
-      home: SplashScreen(),
+      initialRoute: '/splash',
+      onGenerateRoute: AppRouter.generateRoute,
     );
   }
 }
