@@ -114,14 +114,48 @@ class ColorPickerDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Danh sách các màu sắc có sẵn
+    List<Color> colorOptions = [
+      const Color.fromARGB(255, 159, 207, 219),
+      Colors.red,
+      Colors.green,
+      Colors.blue,
+      Colors.yellow,
+      Colors.purple,
+      Colors.orange,
+      Colors.pink,
+      Colors.teal,
+      Colors.brown
+    ];
+
     return AlertDialog(
       title: const Text('Chọn màu'),
       content: SingleChildScrollView(
-        child: BlockPicker(
-          pickerColor: initialColor,
-          onColorChanged: (color) {
-            Navigator.of(context).pop(color);
-          },
+        child: Column(
+          children: [
+            // Hiển thị danh sách màu sắc
+            Wrap(
+              spacing: 8.0,
+              children: colorOptions.map((color) {
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pop(color); // Trả về màu đã chọn
+                  },
+                  child: CircleAvatar(
+                    backgroundColor: color,
+                    radius: 20,
+                  ),
+                );
+              }).toList(),
+            ),
+            // Color picker widget (nếu bạn vẫn muốn giữ nó)
+            BlockPicker(
+              pickerColor: initialColor,
+              onColorChanged: (color) {
+                Navigator.of(context).pop(color);
+              },
+            ),
+          ],
         ),
       ),
     );
