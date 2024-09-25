@@ -1,6 +1,3 @@
-// lib/screens/edit_task_screen.dart
-// ignore_for_file: prefer_const_constructors
-
 import 'package:daily_planner_test/model/task.dart';
 import 'package:daily_planner_test/work/work_cubit.dart';
 import 'package:flutter/material.dart';
@@ -23,18 +20,9 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
   final TextEditingController reviewerController = TextEditingController();
 
   String selectedDayOfWeek = '';
+  DateTime selectedDate = DateTime.now(); // Thêm biến selectedDate
   String selectedLeader = 'Thanh Ngân';
   String taskStatus = 'Tạo mới';
-
-  final List<String> daysOfWeek = [
-    'Thứ 2',
-    'Thứ 3',
-    'Thứ 4',
-    'Thứ 5',
-    'Thứ 6',
-    'Thứ 7',
-    'Chủ Nhật'
-  ];
 
   final List<String> leaders = [
     'Thanh Ngân',
@@ -50,9 +38,27 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
     locationController.text = widget.task.location;
     noteController.text = widget.task.note;
     reviewerController.text = widget.task.reviewer;
-    selectedDayOfWeek = widget.task.dayOfWeek;
     selectedLeader = widget.task.leader;
     taskStatus = widget.task.status;
+
+    // Khởi tạo ngày từ task và lấy thứ trong tuần
+    selectedDate = DateTime.parse(widget.task.dayOfWeek.split(' ')[0]);
+    selectedDayOfWeek = _getDayOfWeek(selectedDate);
+  }
+
+  // Hàm lấy ngày trong tuần từ DateTime
+  String _getDayOfWeek(DateTime date) {
+    final dayIndex = date.weekday; // 1 = Monday, 2 = Tuesday, ..., 7 = Sunday
+    const List<String> daysOfWeek = [
+      'Thứ 2',
+      'Thứ 3',
+      'Thứ 4',
+      'Thứ 5',
+      'Thứ 6',
+      'Thứ 7',
+      'Chủ Nhật'
+    ];
+    return daysOfWeek[dayIndex - 1]; // daysOfWeek bắt đầu từ 'Thứ 2'
   }
 
   @override
@@ -67,21 +73,27 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Ngày (Dropdown)
-              DropdownButtonFormField<String>(
-                value: selectedDayOfWeek,
-                items: daysOfWeek.map((String day) {
-                  return DropdownMenuItem<String>(
-                    value: day,
-                    child: Text(day),
+              const SizedBox(height: 16.0),
+
+              // Ngày (DatePicker)
+              TextButton(
+                onPressed: () async {
+                  DateTime? pickedDate = await showDatePicker(
+                    context: context,
+                    initialDate: selectedDate,
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime(2101),
                   );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    selectedDayOfWeek = newValue!;
-                  });
+                  if (pickedDate != null && pickedDate != selectedDate) {
+                    setState(() {
+                      selectedDate = pickedDate;
+                      selectedDayOfWeek = _getDayOfWeek(selectedDate);
+                    });
+                  }
                 },
-                decoration: const InputDecoration(labelText: 'Ngày'),
+                child: Text(
+                  'Chọn Ngày: ${selectedDate.toLocal().toString().split(' ')[0]} (${selectedDayOfWeek})',
+                ),
               ),
               const SizedBox(height: 16.0),
 
@@ -165,7 +177,8 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                   final updatedTask = Task(
                     id: widget.task.id,
                     userId: widget.task.userId, // Giữ nguyên userId
-                    dayOfWeek: selectedDayOfWeek,
+                    dayOfWeek:
+                        '${selectedDate.toLocal().toString().split(' ')[0]} ($selectedDayOfWeek)', // Cập nhật ngày và thứ
                     content: contentController.text,
                     time: timeController.text,
                     location: locationController.text,

@@ -63,21 +63,21 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Ngày (Chọn từ Dropdown)
-              DropdownButtonFormField<String>(
-                value: selectedDayOfWeek,
-                items: daysOfWeek.map((String day) {
-                  return DropdownMenuItem<String>(
-                    value: day,
-                    child: Text(day),
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    selectedDayOfWeek = newValue!;
-                  });
-                },
-                decoration: const InputDecoration(labelText: 'Ngày'),
-              ),
+              // DropdownButtonFormField<String>(
+              //   value: selectedDayOfWeek,
+              //   items: daysOfWeek.map((String day) {
+              //     return DropdownMenuItem<String>(
+              //       value: day,
+              //       child: Text(day),
+              //     );
+              //   }).toList(),
+              //   onChanged: (String? newValue) {
+              //     setState(() {
+              //       selectedDayOfWeek = newValue!;
+              //     });
+              //   },
+              //   decoration: const InputDecoration(labelText: 'Ngày'),
+              // ),
               const SizedBox(height: 16.0),
 
               // Ngày (DatePicker)
@@ -189,7 +189,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                   final task = Task(
                     id: '',
                     userId: '',
-                    dayOfWeek: selectedDayOfWeek,
+                    dayOfWeek:
+                        '${selectedDate.toLocal().toString().split(' ')[0]} ($selectedDayOfWeek)',
                     content: contentController.text,
                     time: timeController.text,
                     location: locationController.text,

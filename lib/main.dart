@@ -1,3 +1,5 @@
+import 'package:daily_planner_test/calendar/calendar_cubit.dart';
+import 'package:daily_planner_test/calendar/calendar_screen.dart';
 import 'package:daily_planner_test/enviroment/environment.dart';
 import 'package:daily_planner_test/firebase_options.dart';
 import 'package:daily_planner_test/router/app_router.dart';
@@ -23,6 +25,10 @@ Future<void> main() async {
       providers: [
         BlocProvider<WorkCubit>(
           create: (context) => WorkCubit(taskRepository)..loadTasks(),
+        ),
+        BlocProvider(
+          create: (context) => CalendarCubit(taskRepository),
+          child: CalendarScreen(),
         ),
         // Add other cubits/blocs here if needed
       ],
