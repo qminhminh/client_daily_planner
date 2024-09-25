@@ -19,7 +19,12 @@ class TaskRepository {
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
-        return data.map((json) => Task.fromJson(json)).toList();
+        final tasks = data.map((json) => Task.fromJson(json)).toList();
+        print('Fetched Tasks: ${data.length} tasks'); // Debug print
+        print(
+            tasks); // Debugging: Print the tasks to verify if data is fetched correctly
+
+        return tasks;
       } else {
         throw Exception('Failed to load tasks');
       }

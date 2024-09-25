@@ -1,8 +1,12 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:daily_planner_test/calendar/calendar_cubit.dart';
 import 'package:daily_planner_test/calendar/calendar_screen.dart';
 import 'package:daily_planner_test/enviroment/environment.dart';
 import 'package:daily_planner_test/firebase_options.dart';
 import 'package:daily_planner_test/router/app_router.dart';
+import 'package:daily_planner_test/statistcis/statitics_cubit.dart';
+import 'package:daily_planner_test/statistcis/statitics_screen.dart';
 import 'package:daily_planner_test/work/task_reponse.dart';
 import 'package:daily_planner_test/work/work_cubit.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -30,6 +34,11 @@ Future<void> main() async {
           create: (context) => CalendarCubit(taskRepository),
           child: CalendarScreen(),
         ),
+        BlocProvider(
+          create: (context) => TaskStatisticsCubit(taskRepository),
+          child: TaskStatisticsScreen(),
+        ),
+
         // Add other cubits/blocs here if needed
       ],
       child: const MyApp(),

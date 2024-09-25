@@ -2,6 +2,7 @@
 
 import 'package:daily_planner_test/calendar/calendar_screen.dart';
 import 'package:daily_planner_test/setting/setting_screen.dart';
+import 'package:daily_planner_test/statistcis/statitics_screen.dart';
 import 'package:daily_planner_test/work/work_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -17,6 +18,7 @@ class _HomePageState extends State<HomePage> {
   static List<Widget> _pages = <Widget>[
     WorkScreen(),
     CalendarScreen(),
+    TaskStatisticsScreen(),
     SettingsScreen(),
   ];
   void _onItemTapped(int index) {
@@ -41,6 +43,10 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_today_outlined),
             label: 'Lịch',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.bar_chart_outlined),
+            label: 'Thống kê',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings_outlined),
