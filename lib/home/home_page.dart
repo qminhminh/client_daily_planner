@@ -27,6 +27,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    const Color primaryColor = Color.fromARGB(255, 159, 207, 219);
     return Scaffold(
       body: Center(
         child: _pages.elementAt(_selectedIndex), // Hiển thị màn hình tương ứng
@@ -50,7 +51,7 @@ class _HomePageState extends State<HomePage> {
         selectedItemColor: Colors.blueAccent, // Màu khi được chọn
         unselectedItemColor: Colors.grey, // Màu khi không được chọn
         showUnselectedLabels: true, // Hiển thị cả các nhãn chưa chọn
-        backgroundColor: Colors.white, // Màu nền của thanh điều hướng
+        backgroundColor: primaryColor, // Màu nền của thanh điều hướng
         type:
             BottomNavigationBarType.fixed, // Đảm bảo các icon giữ nguyên vị trí
         onTap: _onItemTapped, // Sự kiện nhấn vào các item

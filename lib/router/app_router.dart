@@ -2,6 +2,7 @@
 
 import 'package:daily_planner_test/auth/login_screen.dart';
 import 'package:daily_planner_test/auth/register_screen.dart';
+import 'package:daily_planner_test/calendar/task_detail_screen.dart';
 import 'package:daily_planner_test/home/home_page.dart';
 import 'package:daily_planner_test/model/task.dart';
 import 'package:daily_planner_test/work/add_task_screen.dart';
@@ -28,6 +29,13 @@ class AppRouter {
             settings.arguments as Task; // Chuyển đổi arguments thành Task
         return MaterialPageRoute(
           builder: (_) => EditTaskScreen(task: task),
+        );
+
+      case '/taskdetail':
+        final Task task =
+            settings.arguments as Task; // Chuyển đổi arguments thành Task
+        return MaterialPageRoute(
+          builder: (_) => TaskDetailScreen(task: task),
         );
       default:
         return MaterialPageRoute(builder: (_) => SplashScreen());
