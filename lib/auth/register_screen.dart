@@ -1,3 +1,5 @@
+import 'package:daily_planner_test/component/custom_snack_bar.dart';
+import 'package:daily_planner_test/component/email_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
@@ -35,6 +37,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
             child: BlocConsumer<LoginCubit, LoginState>(
               listener: (context, state) {
                 if (state is LoginSuccess) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    CustomSnackBar.show(
+                      message: 'Proceed to register',
+                      backgroundColor:
+                          const Color.fromARGB(255, 159, 207, 219), // Màu nền
+                      icon: Icons.add_alert, // Icon thông báo
+                      iconColor: Colors.white, // Màu icon
+                      textColor: Colors.black, // Màu chữ
+                    ),
+                  );
                   Navigator.pushNamed(context, '/login');
                 } else if (state is LoginFailure) {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -53,104 +65,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       children: [
                         const SizedBox(height: 250),
                         const SizedBox(height: 20),
-                        TextFormField(
-                          cursorColor: const Color.fromARGB(255, 159, 207, 219),
+                        TextFieldComponent(
                           controller: _emailController,
-                          decoration: InputDecoration(
-                            labelText: 'Email',
-                            labelStyle: const TextStyle(
-                                color: Color.fromARGB(255, 159, 207, 219)),
-                            fillColor: const Color.fromARGB(255, 159, 207, 219),
-                            iconColor: const Color.fromARGB(255, 159, 207, 219),
-                            prefixIcon: const Icon(Icons.email,
-                                color: Color.fromARGB(255, 159, 207, 219)),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                              borderSide: const BorderSide(
-                                  color: Color.fromARGB(255, 159, 207, 219)),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                              borderSide: const BorderSide(
-                                  color: Color.fromARGB(255, 159, 207, 219),
-                                  width: 2.0),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                              borderSide: const BorderSide(
-                                  color: Color.fromARGB(255, 159, 207, 219),
-                                  width: 2.0),
-                            ),
-                            errorBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                              borderSide: const BorderSide(
-                                  color: Colors.red, width: 2.0),
-                            ),
-                            focusedErrorBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                              borderSide: const BorderSide(
-                                  color: Colors.red, width: 2.0),
-                            ),
-                          ),
                           onChanged: (email) {
                             cubit.setEmail(email);
                           },
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Email không được để trống';
-                            }
-                            return null;
-                          },
+                          labeltext: 'Email',
+                          notevalidate: 'Email không được để trống',
+                          icon: Icons.email,
                         ),
                         const SizedBox(height: 20),
-                        TextFormField(
-                          cursorColor: const Color.fromARGB(255, 159, 207, 219),
+                        TextFieldComponent(
                           controller: _passwordController,
-                          decoration: InputDecoration(
-                            labelText: 'Password',
-                            labelStyle: const TextStyle(
-                                color: Color.fromARGB(255, 159, 207, 219)),
-                            fillColor: const Color.fromARGB(255, 159, 207, 219),
-                            iconColor: const Color.fromARGB(255, 159, 207, 219),
-                            prefixIcon: const Icon(Icons.password,
-                                color: Color.fromARGB(255, 159, 207, 219)),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                              borderSide: const BorderSide(
-                                  color: Color.fromARGB(255, 159, 207, 219)),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                              borderSide: const BorderSide(
-                                  color: Color.fromARGB(255, 159, 207, 219),
-                                  width: 2.0),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                              borderSide: const BorderSide(
-                                  color: Color.fromARGB(255, 159, 207, 219),
-                                  width: 2.0),
-                            ),
-                            errorBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                              borderSide: const BorderSide(
-                                  color: Colors.red, width: 2.0),
-                            ),
-                            focusedErrorBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                              borderSide: const BorderSide(
-                                  color: Colors.red, width: 2.0),
-                            ),
-                          ),
                           onChanged: (password) {
                             cubit.setPassword(password);
                           },
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Password không được để trống';
-                            }
-                            return null;
-                          },
+                          labeltext: 'Password',
+                          notevalidate: 'Password không được để trống',
+                          icon: Icons.password,
                         ),
                         const SizedBox(height: 20),
                         if (state is LoginLoading)

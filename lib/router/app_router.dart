@@ -3,6 +3,7 @@
 import 'package:daily_planner_test/auth/login_screen.dart';
 import 'package:daily_planner_test/auth/register_screen.dart';
 import 'package:daily_planner_test/home/home_page.dart';
+import 'package:daily_planner_test/work/add_task_screen.dart';
 import 'package:flutter/material.dart';
 import '../splash/splash_screen.dart'; // Cập nhật đường dẫn tùy theo cấu trúc dự án của bạn
 // Cập nhật đường dẫn tùy theo cấu trúc dự án của bạn
@@ -18,6 +19,8 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => SplashScreen());
       case '/home':
         return MaterialPageRoute(builder: (_) => HomePage());
+      case '/addtask':
+        return MaterialPageRoute(builder: (_) => AddTaskScreen());
       default:
         return MaterialPageRoute(builder: (_) => SplashScreen());
     }

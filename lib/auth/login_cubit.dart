@@ -4,12 +4,14 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:daily_planner_test/auth/login_state.dart';
 import 'package:daily_planner_test/enviroment/environment.dart';
+import 'package:get_storage/get_storage.dart';
 
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class LoginCubit extends Cubit<LoginState> {
   final http.Client httpClient;
+  final box = GetStorage();
 
   // Controllers for Streams
   final StreamController<String> _emailController = StreamController<String>();
@@ -29,13 +31,12 @@ class LoginCubit extends Cubit<LoginState> {
     _passwordController.add(password);
   }
 
-  Future<void> login(String email, String password) async {
+  void login(String email, String password) async {
     emit(LoginLoading());
 
     try {
       final response = await httpClient.post(
-        Uri.parse(
-            '${Environment().appBaseUrl}/api/users/login'), // Thay đổi URL này với URL thực tế của bạn
+        Uri.parse('${Environment().appBaseUrl}/api/users/login'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -46,14 +47,24 @@ class LoginCubit extends Cubit<LoginState> {
       );
 
       if (response.statusCode == 200) {
-        final jsonResponse = jsonDecode(response.body);
-        final token = jsonResponse['token'];
+        // Decode the response body to a Map<String, dynamic>
+        final data = jsonDecode(response.body) as Map<String, dynamic>;
 
-        emit(LoginSuccess(token: "token"));
+        // Access the userToken directly from the map
+        final String userToken = data['userToken'];
+
+        // Store the token in local storage
+        box.write("token", json.encode(userToken));
+
+        print('Token: $userToken');
+
+        // Emit success with the actual token
+        emit(LoginSuccess(token: userToken));
       } else {
         emit(LoginFailure(error: 'Đăng nhập thất bại'));
       }
     } catch (e) {
+      print("Error: " + e.toString());
       emit(LoginFailure(error: 'Có lỗi xảy ra'));
     }
   }
@@ -77,8 +88,7 @@ class LoginCubit extends Cubit<LoginState> {
       print('appBaseUrl: ${Environment().appBaseUrl}');
 
       if (response.statusCode == 201) {
-        final jsonResponse = jsonDecode(response.body);
-        final token = jsonResponse['token'];
+        // final jsonResponse = jsonDecode(response.body);
 
         emit(LoginSuccess(token: "Thành công"));
       } else {
