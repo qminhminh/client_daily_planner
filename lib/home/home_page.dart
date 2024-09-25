@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_final_fields, prefer_const_constructors
+
 import 'package:daily_planner_test/calendar/calendar_screen.dart';
 import 'package:daily_planner_test/setting/setting_screen.dart';
 import 'package:daily_planner_test/work/work_screen.dart';
@@ -12,7 +14,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
-  static const List<Widget> _pages = <Widget>[
+  static List<Widget> _pages = <Widget>[
     WorkScreen(),
     CalendarScreen(),
     SettingsScreen(),

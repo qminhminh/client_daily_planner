@@ -55,8 +55,10 @@ class LoginCubit extends Cubit<LoginState> {
 
         // Store the token in local storage
         box.write("token", json.encode(userToken));
+        box.write("userId", data['_id']);
 
         print('Token: $userToken');
+        print('userId: ${data['_id']}');
 
         // Emit success with the actual token
         emit(LoginSuccess(token: userToken));
@@ -67,6 +69,11 @@ class LoginCubit extends Cubit<LoginState> {
       print("Error: " + e.toString());
       emit(LoginFailure(error: 'Có lỗi xảy ra'));
     }
+  }
+
+  void logout() {
+    box.erase();
+    emit(LoginInitial());
   }
 
   void register(String email, String password) async {

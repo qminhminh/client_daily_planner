@@ -1,17 +1,21 @@
-// lib/screens/add_task_screen.dart
-// ignore_for_file: use_key_in_widget_constructors, unnecessary_brace_in_string_interps, prefer_const_constructors
+// lib/screens/edit_task_screen.dart
+// ignore_for_file: prefer_const_constructors
 
 import 'package:daily_planner_test/model/task.dart';
 import 'package:daily_planner_test/work/work_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class AddTaskScreen extends StatefulWidget {
+class EditTaskScreen extends StatefulWidget {
+  final Task task; // Nhận task để chỉnh sửa
+
+  EditTaskScreen({required this.task});
+
   @override
-  State<AddTaskScreen> createState() => _AddTaskScreenState();
+  State<EditTaskScreen> createState() => _EditTaskScreenState();
 }
 
-class _AddTaskScreenState extends State<AddTaskScreen> {
+class _EditTaskScreenState extends State<EditTaskScreen> {
   final TextEditingController contentController = TextEditingController();
   final TextEditingController timeController = TextEditingController();
   final TextEditingController locationController = TextEditingController();
@@ -20,7 +24,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
   String selectedDayOfWeek = '';
   String selectedLeader = 'Thanh Ngân';
-  DateTime selectedDate = DateTime.now();
   String taskStatus = 'Tạo mới';
 
   final List<String> daysOfWeek = [
@@ -41,20 +44,22 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   @override
   void initState() {
     super.initState();
-    selectedDayOfWeek = _getDayOfWeek(selectedDate);
-  }
-
-  // Hàm lấy ngày trong tuần từ DateTime
-  String _getDayOfWeek(DateTime date) {
-    final dayIndex = date.weekday; // 1 = Monday, 2 = Tuesday, ..., 7 = Sunday
-    return daysOfWeek[dayIndex - 1]; // `daysOfWeek` bắt đầu từ 'Thứ 2'
+    // Khởi tạo dữ liệu từ task hiện tại
+    contentController.text = widget.task.content;
+    timeController.text = widget.task.time;
+    locationController.text = widget.task.location;
+    noteController.text = widget.task.note;
+    reviewerController.text = widget.task.reviewer;
+    selectedDayOfWeek = widget.task.dayOfWeek;
+    selectedLeader = widget.task.leader;
+    taskStatus = widget.task.status;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Thêm Công Việc'),
+        title: const Text('Chỉnh Sửa Công Việc'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -62,7 +67,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Ngày (Chọn từ Dropdown)
+              // Ngày (Dropdown)
               DropdownButtonFormField<String>(
                 value: selectedDayOfWeek,
                 items: daysOfWeek.map((String day) {
@@ -77,28 +82,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                   });
                 },
                 decoration: const InputDecoration(labelText: 'Ngày'),
-              ),
-              const SizedBox(height: 16.0),
-
-              // Ngày (DatePicker)
-              TextButton(
-                onPressed: () async {
-                  DateTime? pickedDate = await showDatePicker(
-                    context: context,
-                    initialDate: selectedDate,
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime(2101),
-                  );
-                  if (pickedDate != null && pickedDate != selectedDate) {
-                    setState(() {
-                      selectedDate = pickedDate;
-                      selectedDayOfWeek = _getDayOfWeek(selectedDate);
-                    });
-                  }
-                },
-                child: Text(
-                  'Chọn Ngày: ${selectedDate.toLocal().toString().split(' ')[0]} (${selectedDayOfWeek})',
-                ),
               ),
               const SizedBox(height: 16.0),
 
@@ -166,14 +149,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 },
                 decoration: const InputDecoration(labelText: 'Trạng thái'),
               ),
-              const SizedBox(height: 16.0),
-
-              // Người thực hiện kiểm duyệt
-              TextField(
-                controller: reviewerController,
-                decoration: const InputDecoration(
-                    labelText: 'Người thực hiện kiểm duyệt'),
-              ),
               const SizedBox(height: 20.0),
 
               // Nút lưu
@@ -181,14 +156,15 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 onPressed: () {
                   if (contentController.text.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Please enter task content')),
+                      SnackBar(
+                          content: Text('Vui lòng nhập nội dung công việc')),
                     );
                     return;
                   }
 
-                  final task = Task(
-                    id: '',
-                    userId: '',
+                  final updatedTask = Task(
+                    id: widget.task.id,
+                    userId: widget.task.userId, // Giữ nguyên userId
                     dayOfWeek: selectedDayOfWeek,
                     content: contentController.text,
                     time: timeController.text,
@@ -198,8 +174,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                     status: taskStatus,
                     reviewer: reviewerController.text,
                   );
-                  context.read<WorkCubit>().addTask(task);
-                  Navigator.pop(context);
+
+                  context.read<WorkCubit>().updateTask(updatedTask);
+                  Navigator.pop(context); // Đóng màn hình sau khi lưu
                 },
                 child: const Text('Lưu'),
               ),

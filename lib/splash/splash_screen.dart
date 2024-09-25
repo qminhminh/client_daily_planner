@@ -1,7 +1,7 @@
-// ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api, use_key_in_widget_constructors, prefer_const_constructors
+// ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api, use_key_in_widget_constructors, prefer_const_constructors, unnecessary_null_comparison
 
-import 'package:daily_planner_test/auth/login_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart'; // Sử dụng GetStorage để lưu trữ token
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -12,16 +12,24 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _navigateToHome();
+    _checkTokenAndNavigate(); // Kiểm tra token sau khi vào SplashScreen
   }
 
-  _navigateToHome() async {
-    // Đợi 3 giây rồi chuyển sang màn hình chính
-    await Future.delayed(const Duration(seconds: 6), () {});
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => LoginScreen()),
-    );
+  Future<void> _checkTokenAndNavigate() async {
+    final box = GetStorage();
+    String? token = box.read('token');
+
+    // Giả lập việc chờ trong vài giây để hiển thị splash (6 giây như yêu cầu của bạn)
+    await Future.delayed(const Duration(seconds: 6));
+
+    // Điều hướng dựa vào token và trạng thái xác minh
+    if (token == null) {
+      // Nếu không có token, điều hướng đến trang đăng nhập (LoginScreen)
+      Navigator.pushReplacementNamed(context, '/login');
+    } else if (token != null) {
+      // Nếu có token và đã xác minh, điều hướng đến MainScreen
+      Navigator.pushReplacementNamed(context, '/home');
+    }
   }
 
   @override

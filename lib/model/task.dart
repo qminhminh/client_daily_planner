@@ -4,7 +4,8 @@
 import 'package:equatable/equatable.dart';
 
 class Task extends Equatable {
-  final String id;
+  final String id; // Thêm trường id
+  final String userId;
   final String dayOfWeek;
   final String content;
   final String time;
@@ -15,7 +16,8 @@ class Task extends Equatable {
   final String reviewer;
 
   Task({
-    required this.id,
+    required this.id, // Thêm trường id vào constructor
+    required this.userId,
     required this.dayOfWeek,
     required this.content,
     required this.time,
@@ -27,13 +29,24 @@ class Task extends Equatable {
   });
 
   @override
-  List<Object> get props =>
-      [id, dayOfWeek, content, time, location, leader, note, status, reviewer];
+  List<Object> get props => [
+        id,
+        userId,
+        dayOfWeek,
+        content,
+        time,
+        location,
+        leader,
+        note,
+        status,
+        reviewer
+      ];
 
   // Factory method for creating Task from JSON
   factory Task.fromJson(Map<String, dynamic> json) {
     return Task(
-      id: json['id'],
+      id: json['_id'], // Lấy id từ _id
+      userId: json['userId'],
       dayOfWeek: json['dayOfWeek'],
       content: json['content'],
       time: json['time'],
@@ -43,5 +56,21 @@ class Task extends Equatable {
       status: json['status'],
       reviewer: json['reviewer'],
     );
+  }
+
+  // Method for converting Task to JSON
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'userId': userId,
+      'dayOfWeek': dayOfWeek,
+      'content': content,
+      'time': time,
+      'location': location,
+      'leader': leader,
+      'note': note,
+      'status': status,
+      'reviewer': reviewer,
+    };
   }
 }
