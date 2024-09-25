@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_declarations, use_key_in_widget_constructors, prefer_const_constructors, sort_child_properties_last
 
+import 'package:daily_planner_test/color/color_background.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:daily_planner_test/enviroment/environment.dart';
@@ -18,7 +19,7 @@ class _WorkScreenState extends State<WorkScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final Color primaryColor = const Color.fromARGB(255, 159, 207, 219);
+    final Color primaryColor = ColorBackground.primaryColor;
     final Color subtitleColor = Colors.black54;
     final Color dividerColor = primaryColor;
 

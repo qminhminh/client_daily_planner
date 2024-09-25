@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_final_fields, prefer_const_constructors
 
 import 'package:daily_planner_test/calendar/calendar_screen.dart';
+import 'package:daily_planner_test/color/color_background.dart';
 import 'package:daily_planner_test/setting/setting_screen.dart';
 import 'package:daily_planner_test/statistcis/statitics_screen.dart';
 import 'package:daily_planner_test/work/work_screen.dart';
@@ -29,7 +30,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    const Color primaryColor = Color.fromARGB(255, 159, 207, 219);
+    Color primaryColor = ColorBackground.primaryColor;
     return Scaffold(
       body: Center(
         child: _pages.elementAt(_selectedIndex), // Hiển thị màn hình tương ứng

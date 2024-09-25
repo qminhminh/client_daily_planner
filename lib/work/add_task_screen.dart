@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_declarations, prefer_const_constructors, unnecessary_brace_in_string_interps, sort_child_properties_last, use_key_in_widget_constructors, deprecated_member_use
 
+import 'package:daily_planner_test/color/color_background.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:daily_planner_test/model/task.dart';
@@ -51,9 +52,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final Color primaryColor = const Color.fromARGB(255, 159, 207, 219);
+    final Color primaryColor = ColorBackground.primaryColor;
     final Color buttonColor = primaryColor;
-    final Color textColor = Colors.black87;
+
     final Color borderColor = primaryColor.withOpacity(0.5);
 
     return Scaffold(
@@ -92,7 +93,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                   Expanded(
                     child: Text(
                       'Chọn Ngày: ${selectedDate.toLocal().toString().split(' ')[0]} (${selectedDayOfWeek})',
-                      style: TextStyle(color: textColor),
                     ),
                   ),
                 ],

@@ -1,3 +1,4 @@
+import 'package:daily_planner_test/color/color_background.dart';
 import 'package:flutter/material.dart';
 import 'package:daily_planner_test/model/task.dart';
 
@@ -12,7 +13,7 @@ class TaskDetailScreen extends StatefulWidget {
 
 class _TaskDetailScreenState extends State<TaskDetailScreen> {
   // Màu chủ đạo của app
-  final Color primaryColor = const Color.fromARGB(255, 159, 207, 219);
+  final Color primaryColor = ColorBackground.primaryColor;
 
   @override
   Widget build(BuildContext context) {

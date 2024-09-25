@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_declarations, unused_local_variable, prefer_const_constructors, sort_child_properties_last, deprecated_member_use, use_key_in_widget_constructors, prefer_const_constructors_in_immutables
 
+import 'package:daily_planner_test/color/color_background.dart';
 import 'package:daily_planner_test/model/task.dart';
 import 'package:daily_planner_test/work/work_cubit.dart';
 import 'package:flutter/material.dart';
@@ -65,7 +66,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final Color primaryColor = const Color.fromARGB(255, 159, 207, 219);
+    final Color primaryColor = ColorBackground.primaryColor;
     final Color buttonColor = primaryColor;
     final Color textColor = Colors.black87;
     final Color borderColor = primaryColor.withOpacity(0.5);
@@ -106,7 +107,6 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                   children: [
                     Icon(Icons.calendar_today, color: primaryColor),
                     Text(
-                      style: TextStyle(color: textColor),
                       'Chọn Ngày: ${selectedDate.toLocal().toString().split(' ')[0]} ($selectedDayOfWeek),',
                     ),
                   ],

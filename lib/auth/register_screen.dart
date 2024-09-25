@@ -1,3 +1,4 @@
+import 'package:daily_planner_test/color/color_background.dart';
 import 'package:daily_planner_test/component/custom_snack_bar.dart';
 import 'package:daily_planner_test/component/email_text_field.dart';
 import 'package:flutter/material.dart';
@@ -40,8 +41,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ScaffoldMessenger.of(context).showSnackBar(
                     CustomSnackBar.show(
                       message: 'Proceed to register',
-                      backgroundColor:
-                          const Color.fromARGB(255, 159, 207, 219), // Màu nền
+                      backgroundColor: ColorBackground.primaryColor, // Màu nền
                       icon: Icons.add_alert, // Icon thông báo
                       iconColor: Colors.white, // Màu icon
                       textColor: Colors.black, // Màu chữ
@@ -102,8 +102,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   },
                                   style: ElevatedButton.styleFrom(
                                     foregroundColor: Colors.white,
-                                    backgroundColor: const Color.fromARGB(
-                                        255, 159, 207, 219),
+                                    backgroundColor:
+                                        ColorBackground.primaryColor,
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 16.0, horizontal: 24.0),
                                     shape: RoundedRectangleBorder(
@@ -118,11 +118,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   onPressed: () {
                                     Navigator.pushNamed(context, '/login');
                                   },
-                                  child: const Text(
+                                  child: Text(
                                     'Đã có tài khoản? Đăng nhập ngay',
                                     style: TextStyle(
-                                        color:
-                                            Color.fromARGB(255, 159, 207, 219)),
+                                        color: ColorBackground.primaryColor),
                                   ),
                                 ),
                               ],

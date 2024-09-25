@@ -1,5 +1,6 @@
 // ignore_for_file: use_key_in_widget_constructors
 
+import 'package:daily_planner_test/color/color_background.dart';
 import 'package:daily_planner_test/component/custom_snack_bar.dart';
 import 'package:daily_planner_test/component/email_text_field.dart';
 import 'package:flutter/material.dart';
@@ -44,8 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ScaffoldMessenger.of(context).showSnackBar(
                     CustomSnackBar.show(
                       message: 'Proceed to login',
-                      backgroundColor:
-                          const Color.fromARGB(255, 159, 207, 219), // Màu nền
+                      backgroundColor: ColorBackground.primaryColor, // Màu nền
                       icon: Icons.add_alert, // Icon thông báo
                       iconColor: Colors.white, // Màu icon
                       textColor: Colors.black, // Màu chữ
@@ -69,17 +69,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SizedBox(height: 250),
-                        // Center(
-                        //   child: ClipOval(
-                        //     ch ild: Image.asset(
-                        //       'assets/logo.jpg', // Đường dẫn đến logo của bạn
-                        //       height: 150, // Chiều cao của logo
-                        //       width: 150, // Chiều rộng của logo
-                        //       fit:
-                        //           BoxFit.cover, // Đảm bảo hình ảnh không bị méo
-                        //     ),
-                        //   ),
-                        // ),
                         const SizedBox(height: 20),
                         TextFieldComponent(
                           controller: _emailController,
@@ -90,7 +79,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           notevalidate: 'Email không được để trống',
                           icon: Icons.email,
                         ),
-
                         const SizedBox(height: 20),
                         TextFieldComponent(
                           controller: _passwordController,
@@ -101,7 +89,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           notevalidate: 'Password không được để trống',
                           icon: Icons.password,
                         ),
-
                         const SizedBox(height: 20),
                         if (state is LoginLoading)
                           const CircularProgressIndicator()
@@ -123,8 +110,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                     },
                                     style: ElevatedButton.styleFrom(
                                       foregroundColor: Colors.white,
-                                      backgroundColor: const Color.fromARGB(
-                                          255, 159, 207, 219),
+                                      backgroundColor:
+                                          ColorBackground.primaryColor,
                                       padding: const EdgeInsets.symmetric(
                                           vertical: 16.0, horizontal: 24.0),
                                       shape: RoundedRectangleBorder(
@@ -141,11 +128,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                   onPressed: () {
                                     Navigator.pushNamed(context, '/register');
                                   },
-                                  child: const Text(
+                                  child: Text(
                                     'Chưa có tài khoản? Đăng ký ngay',
                                     style: TextStyle(
-                                        color:
-                                            Color.fromARGB(255, 159, 207, 219)),
+                                        color: ColorBackground.primaryColor),
                                   ),
                                 ),
                               ],

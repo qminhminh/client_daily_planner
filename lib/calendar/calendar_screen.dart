@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:daily_planner_test/color/color_background.dart';
 import 'package:daily_planner_test/work/work_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,7 +22,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   List<Task> _allTasks = []; // Danh sách chứa tất cả các nhiệm vụ
 
   // Màu chủ đạo của ứng dụng
-  final Color primaryColor = const Color.fromARGB(255, 159, 207, 219);
+  final Color primaryColor = ColorBackground.primaryColor;
 
   @override
   void initState() {

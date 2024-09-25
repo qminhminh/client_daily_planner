@@ -74,6 +74,9 @@ class LoginCubit extends Cubit<LoginState> {
   void logout() {
     box.erase();
     emit(LoginInitial());
+
+    _emailController.close();
+    _passwordController.close();
   }
 
   void register(String email, String password) async {
