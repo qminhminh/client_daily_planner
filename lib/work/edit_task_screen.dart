@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_declarations, unused_local_variable, prefer_const_constructors, sort_child_properties_last, deprecated_member_use
+// ignore_for_file: prefer_const_declarations, unused_local_variable, prefer_const_constructors, sort_child_properties_last, deprecated_member_use, use_key_in_widget_constructors, prefer_const_constructors_in_immutables
 
 import 'package:daily_planner_test/model/task.dart';
 import 'package:daily_planner_test/work/work_cubit.dart';

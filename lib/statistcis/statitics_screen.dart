@@ -207,7 +207,7 @@ class _TaskStatisticsScreenState extends State<TaskStatisticsScreen> {
                           mood = '😊'; // Mood tương ứng
                           break;
                         case 'Kết thúc':
-                          mood = '😐'; // Mood tương ứng
+                          mood = '😁'; // Mood tương ứng
                           break;
                         default:
                           mood = '😁'; // Mood mặc định

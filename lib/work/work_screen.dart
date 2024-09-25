@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_declarations, use_key_in_widget_constructors, prefer_const_constructors
+// ignore_for_file: prefer_const_declarations, use_key_in_widget_constructors, prefer_const_constructors, sort_child_properties_last
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
