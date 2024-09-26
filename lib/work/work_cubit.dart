@@ -1,11 +1,12 @@
 import 'package:daily_planner_test/model/task.dart';
+import 'package:daily_planner_test/service/notifi_service.dart';
 import 'package:daily_planner_test/work/task_reponse.dart';
 import 'package:daily_planner_test/work/work_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class WorkCubit extends Cubit<WorkState> {
   final TaskRepository repository;
-
+  final NotificationService _notificationService = NotificationService();
   WorkCubit(this.repository) : super(WorkInitial());
 
   void loadTasks() async {
@@ -22,6 +23,7 @@ class WorkCubit extends Cubit<WorkState> {
     try {
       emit(WorkLoading());
       await repository.addTask(task);
+      _notificationService.scheduleTaskNotificationWithCountdown(task);
       loadTasks(); // Reload tasks after adding
     } catch (e) {
       emit(WorkError(message: e.toString()));
@@ -32,6 +34,7 @@ class WorkCubit extends Cubit<WorkState> {
     try {
       emit(WorkLoading());
       await repository.updateTask(task);
+      _notificationService.scheduleTaskNotificationWithCountdown(task);
       loadTasks(); // Reload tasks after updating
     } catch (e) {
       emit(WorkError(message: e.toString()));
@@ -42,6 +45,7 @@ class WorkCubit extends Cubit<WorkState> {
     try {
       emit(WorkLoading());
       await repository.deleteTask(id);
+      _notificationService.flutterLocalNotificationsPlugin.cancel(id.hashCode);
       loadTasks(); // Reload tasks after deleting
     } catch (e) {
       emit(WorkError(message: e.toString()));
