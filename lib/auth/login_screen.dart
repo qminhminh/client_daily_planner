@@ -5,6 +5,7 @@ import 'package:daily_planner_test/component/custom_snack_bar.dart';
 import 'package:daily_planner_test/component/email_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'login_cubit.dart';
 import 'login_state.dart';
 import 'package:http/http.dart' as http;
@@ -30,7 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
         decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage(
-              'assets/logo.jpg',
+              'assets/1.jpg',
             ), // Đường dẫn đến ảnh nền
             fit: BoxFit.cover, // Đảm bảo ảnh lấp đầy màn hình
           ),

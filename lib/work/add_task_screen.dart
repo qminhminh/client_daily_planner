@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:daily_planner_test/model/task.dart';
 import 'package:daily_planner_test/work/work_cubit.dart';
+import 'package:get_storage/get_storage.dart';
 
 class AddTaskScreen extends StatefulWidget {
   @override
@@ -22,6 +23,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   String selectedLeader = 'Thanh Ngân';
   DateTime selectedDate = DateTime.now();
   String taskStatus = 'Tạo mới';
+  final GetStorage _storage = GetStorage();
+  bool isDarkMode = false;
+  bool isBackgroundEnabled = false;
 
   final List<String> daysOfWeek = [
     'Thứ 2',
@@ -41,6 +45,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   @override
   void initState() {
     super.initState();
+    isDarkMode = _storage.read("isDarkMode") ?? false;
+    isBackgroundEnabled = _storage.read("isBackground") ?? false;
     selectedDayOfWeek = _getDayOfWeek(selectedDate);
   }
 
@@ -65,141 +71,155 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         ),
         backgroundColor: primaryColor,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Ngày (DatePicker)
-            TextButton(
-              onPressed: () async {
-                DateTime? pickedDate = await showDatePicker(
-                  context: context,
-                  initialDate: selectedDate,
-                  firstDate: DateTime(2000),
-                  lastDate: DateTime(2101),
-                );
-                if (pickedDate != null && pickedDate != selectedDate) {
-                  setState(() {
-                    selectedDate = pickedDate;
-                    selectedDayOfWeek = _getDayOfWeek(selectedDate);
-                  });
-                }
-              },
-              child: Row(
-                children: [
-                  Icon(Icons.calendar_today, color: primaryColor),
-                  SizedBox(width: 8.0),
-                  Expanded(
-                    child: Text(
-                      'Chọn Ngày: ${selectedDate.toLocal().toString().split(' ')[0]} (${selectedDayOfWeek})',
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16.0),
-
-            // Nội dung công việc
-            _buildTextField(
-                controller: contentController,
-                label: 'Nội dung công việc',
-                borderColor: borderColor),
-            const SizedBox(height: 16.0),
-
-            // Thời gian
-            _buildTextField(
-                controller: timeController,
-                label: 'Thời gian',
-                borderColor: borderColor),
-            const SizedBox(height: 16.0),
-
-            // Địa điểm
-            _buildTextField(
-                controller: locationController,
-                label: 'Địa điểm',
-                borderColor: borderColor),
-            const SizedBox(height: 16.0),
-
-            // Chủ trì (Dropdown)
-            _buildDropdown<String>(
-              value: selectedLeader,
-              items: leaders,
-              onChanged: (newValue) {
-                setState(() {
-                  selectedLeader = newValue!;
-                });
-              },
-              label: 'Chủ trì',
-              borderColor: borderColor,
-            ),
-            const SizedBox(height: 16.0),
-
-            // Ghi chú
-            _buildTextField(
-                controller: noteController,
-                label: 'Ghi chú',
-                borderColor: borderColor),
-            const SizedBox(height: 16.0),
-
-            // Trạng thái (Dropdown)
-            _buildDropdown<String>(
-              value: taskStatus,
-              items: ['Tạo mới', 'Thực hiện', 'Thành công', 'Kết thúc'],
-              onChanged: (newValue) {
-                setState(() {
-                  taskStatus = newValue!;
-                });
-              },
-              label: 'Trạng thái',
-              borderColor: borderColor,
-            ),
-            const SizedBox(height: 16.0),
-
-            // Người thực hiện kiểm duyệt
-            _buildTextField(
-                controller: reviewerController,
-                label: 'Người thực hiện kiểm duyệt',
-                borderColor: borderColor),
-            const SizedBox(height: 20.0),
-
-            // Nút lưu
-            ElevatedButton(
-              onPressed: () {
-                if (contentController.text.isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Vui lòng nhập nội dung công việc')),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          image: isBackgroundEnabled
+              ? DecorationImage(
+                  image:
+                      AssetImage(isDarkMode ? 'assets/2.jpg' : 'assets/1.jpg'),
+                  fit: BoxFit.cover,
+                )
+              : null,
+        ),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Ngày (DatePicker)
+              TextButton(
+                onPressed: () async {
+                  DateTime? pickedDate = await showDatePicker(
+                    context: context,
+                    initialDate: selectedDate,
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime(2101),
                   );
-                  return;
-                }
-
-                final task = Task(
-                  id: '',
-                  userId: '',
-                  dayOfWeek:
-                      '${selectedDate.toLocal().toString().split(' ')[0]} ($selectedDayOfWeek)',
-                  content: contentController.text,
-                  time: timeController.text,
-                  location: locationController.text,
-                  leader: selectedLeader,
-                  note: noteController.text,
-                  status: taskStatus,
-                  reviewer: reviewerController.text,
-                );
-                context.read<WorkCubit>().addTask(task);
-                Navigator.pop(context);
-              },
-              child: Text('Lưu',
-                  style: TextStyle(fontSize: 18, color: Colors.white)),
-              style: ElevatedButton.styleFrom(
-                primary: buttonColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
+                  if (pickedDate != null && pickedDate != selectedDate) {
+                    setState(() {
+                      selectedDate = pickedDate;
+                      selectedDayOfWeek = _getDayOfWeek(selectedDate);
+                    });
+                  }
+                },
+                child: Row(
+                  children: [
+                    Icon(Icons.calendar_today, color: primaryColor),
+                    SizedBox(width: 8.0),
+                    Expanded(
+                      child: Text(
+                        'Chọn Ngày: ${selectedDate.toLocal().toString().split(' ')[0]} (${selectedDayOfWeek})',
+                      ),
+                    ),
+                  ],
                 ),
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
               ),
-            ),
-          ],
+              const SizedBox(height: 16.0),
+
+              // Nội dung công việc
+              _buildTextField(
+                  controller: contentController,
+                  label: 'Nội dung công việc',
+                  borderColor: borderColor),
+              const SizedBox(height: 16.0),
+
+              // Thời gian
+              _buildTextField(
+                  controller: timeController,
+                  label: 'Thời gian',
+                  borderColor: borderColor),
+              const SizedBox(height: 16.0),
+
+              // Địa điểm
+              _buildTextField(
+                  controller: locationController,
+                  label: 'Địa điểm',
+                  borderColor: borderColor),
+              const SizedBox(height: 16.0),
+
+              // Chủ trì (Dropdown)
+              _buildDropdown<String>(
+                value: selectedLeader,
+                items: leaders,
+                onChanged: (newValue) {
+                  setState(() {
+                    selectedLeader = newValue!;
+                  });
+                },
+                label: 'Chủ trì',
+                borderColor: borderColor,
+              ),
+              const SizedBox(height: 16.0),
+
+              // Ghi chú
+              _buildTextField(
+                  controller: noteController,
+                  label: 'Ghi chú',
+                  borderColor: borderColor),
+              const SizedBox(height: 16.0),
+
+              // Trạng thái (Dropdown)
+              _buildDropdown<String>(
+                value: taskStatus,
+                items: ['Tạo mới', 'Thực hiện', 'Thành công', 'Kết thúc'],
+                onChanged: (newValue) {
+                  setState(() {
+                    taskStatus = newValue!;
+                  });
+                },
+                label: 'Trạng thái',
+                borderColor: borderColor,
+              ),
+              const SizedBox(height: 16.0),
+
+              // Người thực hiện kiểm duyệt
+              _buildTextField(
+                  controller: reviewerController,
+                  label: 'Người thực hiện kiểm duyệt',
+                  borderColor: borderColor),
+              const SizedBox(height: 20.0),
+
+              // Nút lưu
+              ElevatedButton(
+                onPressed: () {
+                  if (contentController.text.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content: Text('Vui lòng nhập nội dung công việc')),
+                    );
+                    return;
+                  }
+
+                  final task = Task(
+                    id: '',
+                    userId: '',
+                    dayOfWeek:
+                        '${selectedDate.toLocal().toString().split(' ')[0]} ($selectedDayOfWeek)',
+                    content: contentController.text,
+                    time: timeController.text,
+                    location: locationController.text,
+                    leader: selectedLeader,
+                    note: noteController.text,
+                    status: taskStatus,
+                    reviewer: reviewerController.text,
+                  );
+                  context.read<WorkCubit>().addTask(task);
+                  Navigator.pop(context);
+                },
+                child: Text('Lưu',
+                    style: TextStyle(fontSize: 18, color: Colors.white)),
+                style: ElevatedButton.styleFrom(
+                  primary: buttonColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

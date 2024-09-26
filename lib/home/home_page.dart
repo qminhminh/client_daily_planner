@@ -6,6 +6,7 @@ import 'package:daily_planner_test/setting/setting_screen.dart';
 import 'package:daily_planner_test/statistcis/statitics_screen.dart';
 import 'package:daily_planner_test/work/work_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -15,6 +16,17 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final GetStorage _storage = GetStorage();
+  bool isDarkMode = false;
+  bool isBackgroundEnabled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    isDarkMode = _storage.read("isDarkMode") ?? false;
+    isBackgroundEnabled = _storage.read("isBackground") ?? false;
+  }
+
   int _selectedIndex = 0;
   static List<Widget> _pages = <Widget>[
     WorkScreen(),
@@ -32,8 +44,22 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     Color primaryColor = ColorBackground.primaryColor;
     return Scaffold(
-      body: Center(
-        child: _pages.elementAt(_selectedIndex), // Hiển thị màn hình tương ứng
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          image: isBackgroundEnabled
+              ? DecorationImage(
+                  image:
+                      AssetImage(isDarkMode ? 'assets/2.jpg' : 'assets/1.jpg'),
+                  fit: BoxFit.cover,
+                )
+              : null,
+        ),
+        child: Center(
+          child:
+              _pages.elementAt(_selectedIndex), // Hiển thị màn hình tương ứng
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[

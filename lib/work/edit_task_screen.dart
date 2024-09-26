@@ -5,6 +5,7 @@ import 'package:daily_planner_test/model/task.dart';
 import 'package:daily_planner_test/work/work_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_storage/get_storage.dart';
 
 class EditTaskScreen extends StatefulWidget {
   final Task task; // Nhận task để chỉnh sửa
@@ -26,6 +27,9 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
   DateTime selectedDate = DateTime.now(); // Thêm biến selectedDate
   String selectedLeader = 'Thanh Ngân';
   String taskStatus = 'Tạo mới';
+  final GetStorage _storage = GetStorage();
+  bool isDarkMode = false;
+  bool isBackgroundEnabled = false;
 
   final List<String> leaders = [
     'Thanh Ngân',
@@ -35,6 +39,8 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
   @override
   void initState() {
     super.initState();
+    isDarkMode = _storage.read("isDarkMode") ?? false;
+    isBackgroundEnabled = _storage.read("isBackground") ?? false;
     // Khởi tạo dữ liệu từ task hiện tại
     contentController.text = widget.task.content;
     timeController.text = widget.task.time;
@@ -79,144 +85,157 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
         ),
         backgroundColor: primaryColor,
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 16.0),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          image: isBackgroundEnabled
+              ? DecorationImage(
+                  image:
+                      AssetImage(isDarkMode ? 'assets/2.jpg' : 'assets/1.jpg'),
+                  fit: BoxFit.cover,
+                )
+              : null,
+        ),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 16.0),
 
-              // Ngày (DatePicker)
-              TextButton(
-                onPressed: () async {
-                  DateTime? pickedDate = await showDatePicker(
-                    context: context,
-                    initialDate: selectedDate,
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime(2101),
-                  );
-                  if (pickedDate != null && pickedDate != selectedDate) {
-                    setState(() {
-                      selectedDate = pickedDate;
-                      selectedDayOfWeek = _getDayOfWeek(selectedDate);
-                    });
-                  }
-                },
-                child: Row(
-                  children: [
-                    Icon(Icons.calendar_today, color: primaryColor),
-                    Text(
-                      'Chọn Ngày: ${selectedDate.toLocal().toString().split(' ')[0]} ($selectedDayOfWeek),',
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16.0),
-
-              // Nội dung công việc
-              // Nội dung công việc
-              _buildTextField(
-                  controller: contentController,
-                  label: 'Nội dung công việc',
-                  borderColor: borderColor),
-              const SizedBox(height: 16.0),
-
-              // Thời gian
-              _buildTextField(
-                  controller: timeController,
-                  label: 'Thời gian',
-                  borderColor: borderColor),
-              const SizedBox(height: 16.0),
-
-              // Địa điểm
-              _buildTextField(
-                  controller: locationController,
-                  label: 'Địa điểm',
-                  borderColor: borderColor),
-              const SizedBox(height: 16.0),
-
-              // Chủ trì (Dropdown)
-              // Chủ trì (Dropdown)
-              _buildDropdown<String>(
-                value: selectedLeader,
-                items: leaders,
-                onChanged: (newValue) {
-                  setState(() {
-                    selectedLeader = newValue!;
-                  });
-                },
-                label: 'Chủ trì',
-                borderColor: borderColor,
-              ),
-              const SizedBox(height: 16.0),
-
-              // Ghi chú
-              // Ghi chú
-              _buildTextField(
-                  controller: noteController,
-                  label: 'Ghi chú',
-                  borderColor: borderColor),
-              const SizedBox(height: 16.0),
-
-              // Trạng thái (Dropdown)
-              _buildDropdown<String>(
-                value: taskStatus,
-                items: ['Tạo mới', 'Thực hiện', 'Thành công', 'Kết thúc'],
-                onChanged: (newValue) {
-                  setState(() {
-                    taskStatus = newValue!;
-                  });
-                },
-                label: 'Trạng thái',
-                borderColor: borderColor,
-              ),
-              const SizedBox(height: 20.0),
-// Người thực hiện kiểm duyệt
-              _buildTextField(
-                  controller: reviewerController,
-                  label: 'Người thực hiện kiểm duyệt',
-                  borderColor: borderColor),
-              const SizedBox(height: 20.0),
-              // Nút lưu
-              ElevatedButton(
-                onPressed: () {
-                  if (contentController.text.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                          content: Text('Vui lòng nhập nội dung công việc')),
+                // Ngày (DatePicker)
+                TextButton(
+                  onPressed: () async {
+                    DateTime? pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: selectedDate,
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime(2101),
                     );
-                    return;
-                  }
-
-                  final updatedTask = Task(
-                    id: widget.task.id,
-                    userId: widget.task.userId, // Giữ nguyên userId
-                    dayOfWeek:
-                        '${selectedDate.toLocal().toString().split(' ')[0]} ($selectedDayOfWeek)', // Cập nhật ngày và thứ
-                    content: contentController.text,
-                    time: timeController.text,
-                    location: locationController.text,
-                    leader: selectedLeader,
-                    note: noteController.text,
-                    status: taskStatus,
-                    reviewer: reviewerController.text,
-                  );
-
-                  context.read<WorkCubit>().updateTask(updatedTask);
-                  Navigator.pop(context); // Đóng màn hình sau khi lưu
-                },
-                child: Text('Lưu',
-                    style: TextStyle(fontSize: 18, color: Colors.white)),
-                style: ElevatedButton.styleFrom(
-                  primary: buttonColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
+                    if (pickedDate != null && pickedDate != selectedDate) {
+                      setState(() {
+                        selectedDate = pickedDate;
+                        selectedDayOfWeek = _getDayOfWeek(selectedDate);
+                      });
+                    }
+                  },
+                  child: Row(
+                    children: [
+                      Icon(Icons.calendar_today, color: primaryColor),
+                      Text(
+                        'Chọn Ngày: ${selectedDate.toLocal().toString().split(' ')[0]} ($selectedDayOfWeek),',
+                      ),
+                    ],
                   ),
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
                 ),
-              ),
-            ],
+                const SizedBox(height: 16.0),
+
+                // Nội dung công việc
+                // Nội dung công việc
+                _buildTextField(
+                    controller: contentController,
+                    label: 'Nội dung công việc',
+                    borderColor: borderColor),
+                const SizedBox(height: 16.0),
+
+                // Thời gian
+                _buildTextField(
+                    controller: timeController,
+                    label: 'Thời gian',
+                    borderColor: borderColor),
+                const SizedBox(height: 16.0),
+
+                // Địa điểm
+                _buildTextField(
+                    controller: locationController,
+                    label: 'Địa điểm',
+                    borderColor: borderColor),
+                const SizedBox(height: 16.0),
+
+                // Chủ trì (Dropdown)
+                // Chủ trì (Dropdown)
+                _buildDropdown<String>(
+                  value: selectedLeader,
+                  items: leaders,
+                  onChanged: (newValue) {
+                    setState(() {
+                      selectedLeader = newValue!;
+                    });
+                  },
+                  label: 'Chủ trì',
+                  borderColor: borderColor,
+                ),
+                const SizedBox(height: 16.0),
+
+                // Ghi chú
+                // Ghi chú
+                _buildTextField(
+                    controller: noteController,
+                    label: 'Ghi chú',
+                    borderColor: borderColor),
+                const SizedBox(height: 16.0),
+
+                // Trạng thái (Dropdown)
+                _buildDropdown<String>(
+                  value: taskStatus,
+                  items: ['Tạo mới', 'Thực hiện', 'Thành công', 'Kết thúc'],
+                  onChanged: (newValue) {
+                    setState(() {
+                      taskStatus = newValue!;
+                    });
+                  },
+                  label: 'Trạng thái',
+                  borderColor: borderColor,
+                ),
+                const SizedBox(height: 20.0),
+                // Người thực hiện kiểm duyệt
+                _buildTextField(
+                    controller: reviewerController,
+                    label: 'Người thực hiện kiểm duyệt',
+                    borderColor: borderColor),
+                const SizedBox(height: 20.0),
+                // Nút lưu
+                ElevatedButton(
+                  onPressed: () {
+                    if (contentController.text.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content: Text('Vui lòng nhập nội dung công việc')),
+                      );
+                      return;
+                    }
+
+                    final updatedTask = Task(
+                      id: widget.task.id,
+                      userId: widget.task.userId, // Giữ nguyên userId
+                      dayOfWeek:
+                          '${selectedDate.toLocal().toString().split(' ')[0]} ($selectedDayOfWeek)', // Cập nhật ngày và thứ
+                      content: contentController.text,
+                      time: timeController.text,
+                      location: locationController.text,
+                      leader: selectedLeader,
+                      note: noteController.text,
+                      status: taskStatus,
+                      reviewer: reviewerController.text,
+                    );
+
+                    context.read<WorkCubit>().updateTask(updatedTask);
+                    Navigator.pop(context); // Đóng màn hình sau khi lưu
+                  },
+                  child: Text('Lưu',
+                      style: TextStyle(fontSize: 18, color: Colors.white)),
+                  style: ElevatedButton.styleFrom(
+                    primary: buttonColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

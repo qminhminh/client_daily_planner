@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:daily_planner_test/statistcis/statitics_cubit.dart';
 import 'package:daily_planner_test/statistcis/statitics_state.dart';
+import 'package:get_storage/get_storage.dart';
 
 class TaskStatisticsScreen extends StatefulWidget {
   const TaskStatisticsScreen({Key? key}) : super(key: key);
@@ -21,10 +22,15 @@ class _TaskStatisticsScreenState extends State<TaskStatisticsScreen> {
   final Color finishedColor = Colors.red;
 
   List<Map<String, dynamic>> temporaryTaskList = [];
+  final GetStorage _storage = GetStorage();
+  bool isDarkMode = false;
+  bool isBackgroundEnabled = false;
 
   @override
   void initState() {
     super.initState();
+    isDarkMode = _storage.read("isDarkMode") ?? false;
+    isBackgroundEnabled = _storage.read("isBackground") ?? false;
     temporaryTaskList.clear();
     // Load task statistics when the screen is initialized
     context.read<TaskStatisticsCubit>().loadTaskStatistics();
@@ -100,43 +106,57 @@ class _TaskStatisticsScreenState extends State<TaskStatisticsScreen> {
             ],
           ),
         ),
-        body: BlocConsumer<TaskStatisticsCubit, TaskStatisticsState>(
-          listener: (context, state) {
-            if (state is TaskStatisticsLoaded) {
-              temporaryTaskList = state.tasks.map((task) {
-                return {
-                  'content': task.content,
-                  'date': task.dayOfWeek,
-                  'status': task.status,
-                };
-              }).toList();
+        body: Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: BoxDecoration(
+            image: isBackgroundEnabled
+                ? DecorationImage(
+                    image: AssetImage(
+                        isDarkMode ? 'assets/2.jpg' : 'assets/1.jpg'),
+                    fit: BoxFit.cover,
+                  )
+                : null,
+          ),
+          child: BlocConsumer<TaskStatisticsCubit, TaskStatisticsState>(
+            listener: (context, state) {
+              if (state is TaskStatisticsLoaded) {
+                temporaryTaskList = state.tasks.map((task) {
+                  return {
+                    'content': task.content,
+                    'date': task.dayOfWeek,
+                    'status': task.status,
+                  };
+                }).toList();
 
-              print(
-                  "Statistics Loaded: Created ${state.createdTasks}, In Progress ${state.inProgressTasks}, Success ${state.successTasks}, Finished ${state.finishedTasks}");
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Loaded tasks: ${state.createdTasks}')),
-              );
-            } else if (state is TaskStatisticsError) {
-              print("Error: ${state.message}");
-            }
-          },
-          builder: (context, state) {
-            if (state is TaskStatisticsLoading) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (state is TaskStatisticsLoaded) {
-              return TabBarView(
-                children: [
-                  _buildTaskTab('Tạo mới'),
-                  _buildTaskTab('Thực hiện'),
-                  _buildTaskTab('Thành công'),
-                  _buildTaskTab('Kết thúc'),
-                ],
-              );
-            } else if (state is TaskStatisticsError) {
-              return Center(child: Text('Error: ${state.message}'));
-            }
-            return Container(); // End with a default case to avoid errors
-          },
+                print(
+                    "Statistics Loaded: Created ${state.createdTasks}, In Progress ${state.inProgressTasks}, Success ${state.successTasks}, Finished ${state.finishedTasks}");
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                      content: Text('Loaded tasks: ${state.createdTasks}')),
+                );
+              } else if (state is TaskStatisticsError) {
+                print("Error: ${state.message}");
+              }
+            },
+            builder: (context, state) {
+              if (state is TaskStatisticsLoading) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (state is TaskStatisticsLoaded) {
+                return TabBarView(
+                  children: [
+                    _buildTaskTab('Tạo mới'),
+                    _buildTaskTab('Thực hiện'),
+                    _buildTaskTab('Thành công'),
+                    _buildTaskTab('Kết thúc'),
+                  ],
+                );
+              } else if (state is TaskStatisticsError) {
+                return Center(child: Text('Error: ${state.message}'));
+              }
+              return Container(); // End with a default case to avoid errors
+            },
+          ),
         ),
       ),
     );
