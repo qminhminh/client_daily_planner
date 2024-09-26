@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, unused_field
 
 import 'package:daily_planner_test/color/color_background.dart';
 import 'package:daily_planner_test/work/work_cubit.dart';
@@ -20,6 +20,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   DateTime _selectedDay = DateTime.now();
   List<Task> _selectedTasks = [];
   List<Task> _allTasks = []; // Danh sách chứa tất cả các nhiệm vụ
+  CalendarFormat _calendarFormat = CalendarFormat.month;
 
   // Màu chủ đạo của ứng dụng
   final Color primaryColor = ColorBackground.primaryColor;
@@ -94,6 +95,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   },
                   eventLoader: _getTasksForDay,
                   calendarFormat: CalendarFormat.month,
+                  onFormatChanged: (format) {
+                    setState(() {
+                      // Update the calendar format based on user selection
+                      _calendarFormat = format;
+                    });
+                  },
                   calendarStyle: CalendarStyle(
                     todayDecoration: BoxDecoration(
                       color: primaryColor,
@@ -111,17 +118,29 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   calendarBuilders: CalendarBuilders(
                     markerBuilder: (context, day, tasks) {
                       if (tasks.isNotEmpty) {
-                        return Container(
-                          margin: const EdgeInsets.all(4.0),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.red, // Màu cho ngày có nhiệm vụ
+                        return Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: List.generate(
+                              tasks
+                                  .length, // Số marker tương ứng với số lượng nhiệm vụ
+                              (index) => Container(
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 1.0),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.red, // Màu của các chấm marker
+                                ),
+                                width: 8.0,
+                                height: 8.0,
+                              ),
+                            ),
                           ),
-                          width: 15.0,
-                          height: 15.0,
                         );
                       }
-                      return null;
+                      return null; // Không hiển thị gì nếu không có nhiệm vụ
                     },
                   ),
                 ),

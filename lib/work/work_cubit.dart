@@ -47,4 +47,9 @@ class WorkCubit extends Cubit<WorkState> {
       emit(WorkError(message: e.toString()));
     }
   }
+
+  void reorderTasks(List<Task> tasks) {
+    emit(WorkLoaded(
+        tasks: tasks)); // Cập nhật lại trạng thái Cubit với danh sách mới
+  }
 }

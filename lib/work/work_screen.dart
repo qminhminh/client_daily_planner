@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_declarations, use_key_in_widget_constructors, prefer_const_constructors, sort_child_properties_last
+// ignore_for_file: sort_child_properties_last, prefer_const_constructors, prefer_const_declarations, use_key_in_widget_constructors
 
 import 'package:daily_planner_test/color/color_background.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +21,6 @@ class _WorkScreenState extends State<WorkScreen> {
   Widget build(BuildContext context) {
     final Color primaryColor = ColorBackground.primaryColor;
     final Color subtitleColor = Colors.black54;
-    final Color dividerColor = primaryColor;
 
     return Scaffold(
       appBar: AppBar(
@@ -47,14 +46,25 @@ class _WorkScreenState extends State<WorkScreen> {
           if (state is WorkLoading) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is WorkLoaded) {
-            return ListView.separated(
+            // Danh sách các task có thể reorder
+            return ReorderableListView.builder(
               itemCount: state.tasks.length,
-              separatorBuilder: (context, index) {
-                return Divider(color: dividerColor); // Divider với màu chủ đạo
+              onReorder: (int oldIndex, int newIndex) {
+                setState(() {
+                  if (newIndex > oldIndex) {
+                    newIndex -= 1;
+                  }
+                  final task = state.tasks.removeAt(oldIndex);
+                  state.tasks.insert(newIndex, task);
+
+                  // Cập nhật Cubit sau khi reorder
+                  context.read<WorkCubit>().reorderTasks(state.tasks);
+                });
               },
               itemBuilder: (context, index) {
                 final task = state.tasks[index];
                 return Card(
+                  key: ValueKey(task.id), // Sử dụng id của task làm key
                   margin: const EdgeInsets.symmetric(
                       vertical: 8.0, horizontal: 16.0),
                   color: primaryColor, // Màu nền của Card
@@ -117,7 +127,6 @@ class _WorkScreenState extends State<WorkScreen> {
                                         context
                                             .read<WorkCubit>()
                                             .deleteTask(task.id);
-
                                         Navigator.of(context).pop();
                                       },
                                     ),
