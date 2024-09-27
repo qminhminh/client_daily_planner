@@ -54,7 +54,7 @@ class _SplashScreenState extends State<SplashScreen> {
             const SizedBox(height: 20),
             // Thêm tên ứng dụng hoặc dòng chào mừng
             const Text(
-              'Welcome to MyApp!',
+              'Chào mừng bạn!',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
           ],

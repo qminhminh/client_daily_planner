@@ -69,8 +69,8 @@ class NotificationService {
   void _showTaskNotification(Task task) async {
     final androidPlatformChannelSpecifics = AndroidNotificationDetails(
       'task_reminder_channel', // id
-      'Task Reminders', // name
-      channelDescription: 'Channel for task reminders',
+      'Nhắc nhở nhiệm vụ', // name
+      channelDescription: 'Kênh cho lời nhắc nhiệm vụ',
       importance: Importance.max,
       priority: Priority.high,
     );
@@ -80,8 +80,8 @@ class NotificationService {
 
     await flutterLocalNotificationsPlugin.show(
       task.id.hashCode, // Unique ID for the notification
-      'Task Reminder: ${task.content}', // Notification title
-      'Scheduled for ${task.time} on ${task.dayOfWeek}', // Notification body
+      'Nhắc nhở nhiệm vụ: ${task.content}', // Notification title
+      'Dự kiến ​​cho ${task.time} vào ${task.dayOfWeek}', // Notification body
       platformChannelSpecifics,
     );
   }
